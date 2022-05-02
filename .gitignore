@@ -30,3 +30,5 @@
 *.exe
 *.out
 *.app
+/x64/Debug
+/.vs/DirectX_Game_Tut/v17
