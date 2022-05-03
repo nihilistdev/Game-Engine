@@ -3,17 +3,19 @@
 
 class GraphicEngeine;
 class DeviceContext;
-class VertexShader
+class PixelShader
 {
 public:
-	VertexShader();
-	~VertexShader();
+	PixelShader();
+	~PixelShader();
 	bool release();
 private:
 	bool init(void* shader_byte_code, size_t byte_code_size);
 private:
-	ID3D11VertexShader* m_vs;
+	ID3D11PixelShader* m_ps;
 private:
 	friend class GraphicsEngine;
 	friend class DeviceContext;
 };
+
+
