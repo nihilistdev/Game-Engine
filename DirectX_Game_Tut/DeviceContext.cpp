@@ -2,7 +2,8 @@
 #include "SwapChain.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
-#include "PIxelShader.h"
+#include "PixelShader.h"
+#include "ConstantBuffer.h"
 
 DeviceContext::DeviceContext(ID3D11DeviceContext* device_context) :m_device_context(device_context)
 {}
@@ -54,6 +55,15 @@ void DeviceContext::drawTriangleStrip(UINT vertex_count, UINT start_vertex_count
 	m_device_context->Draw(vertex_count, start_vertex_count);
 }
 
+void DeviceContext::setConstantBuffer(VertexShader* vertex_shader, ConstantBuffer* buffer)
+{
+	m_device_context->VSSetConstantBuffers(0, 1, &buffer->m_buffer);
+}
+
+void DeviceContext::setConstantBuffer(PixelShader* pixel_shader, ConstantBuffer* buffer)
+{
+	m_device_context->PSSetConstantBuffers(0, 1, &buffer->m_buffer);
+}
 
 bool DeviceContext::release()
 {
