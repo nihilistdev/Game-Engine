@@ -7,6 +7,7 @@
 #include "ConstantBuffer.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
+#include "IndexBuffer.h"
 
 class AppWindow : public Window
 {
@@ -25,6 +26,7 @@ private:
 	VertexShader* m_vs;
 	PixelShader* m_ps;
 	ConstantBuffer* m_cb;
+	IndexBuffer* m_ib;
 
 	float m_old_delta;
 	float m_new_delta;

@@ -1,15 +1,13 @@
 #pragma once
 #include <d3d11.h>
 
-#pragma once
-#include <d3d11.h>
-
 class SwapChain;
 class DeviceContext;
 class VertexBuffer;
 class VertexShader;
 class PixelShader;
 class ConstantBuffer;
+class IndexBuffer;
 class GraphicsEngine
 {
 public:
@@ -24,6 +22,7 @@ public:
 	VertexShader* createVertexShader(void* shader_byte_code, size_t byte_code_size);
 	PixelShader* createPixelShader(void* shader_byte_code, size_t byte_code_size);
 	ConstantBuffer* createConstantBuffer();
+	IndexBuffer* createIndexBuffer();
 public:
 	bool compileVertexShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size);
 	bool compilePixelShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size);
@@ -54,4 +53,5 @@ private:
 	friend class VertexShader;
 	friend class PixelShader;
 	friend class ConstantBuffer;
+	friend class IndexBuffer;
 };

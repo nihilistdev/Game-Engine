@@ -23,6 +23,7 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 	desc.SampleDesc.Quality = 0;
 	desc.Windowed = TRUE;
 
+	//Create the swap chain for the window indicated by HWND parameter
 	HRESULT hr = GraphicsEngine::get()->m_dxgi_factory->CreateSwapChain(device, &desc, &m_swap_chain);
 
 	if (FAILED(hr))
@@ -30,6 +31,8 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 		return false;
 	}
 
+	//Get the back buffer color and create its render target view
+	//--------------------------------
 	ID3D11Texture2D* buffer = NULL;
 	hr = m_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer);
 
