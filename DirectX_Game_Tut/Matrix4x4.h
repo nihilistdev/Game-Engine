@@ -56,7 +56,6 @@ public:
 		m_mat[1][1] = cos(z);
 	}
 
-
 	void operator *=(const Matrix4x4& matrix)
 	{
 		Matrix4x4 out;

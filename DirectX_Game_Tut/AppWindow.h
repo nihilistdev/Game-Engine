@@ -22,6 +22,13 @@ public:
 	virtual void onDestroy() override;
 	virtual void onKeyDown(int key) override;
 	virtual void onKeyUp(int key) override;
+	virtual void onMouseMove(const Point& delta_mouse_pos) override;
+	virtual void onFocus() override;
+	virtual void onKillFocus() override;
+	virtual void onLeftMouseUp(const Point& delta_mouse_pos) override;
+	virtual void onLeftMouseDown(const Point& delta_mouse_pos) override;
+	virtual void onRightMouseUp(const Point& delta_mouse_pos) override;
+	virtual void onRightMouseDown(const Point& delta_mouse_pos) override;
 private:
 	SwapChain* m_swap_chain;
 	VertexBuffer* m_vb;
@@ -38,4 +45,5 @@ private:
 
 	float m_rot_x = 0.0f;
 	float m_rot_y = 0.0f;
+	float m_scale_cube = 1.0f;
 };
