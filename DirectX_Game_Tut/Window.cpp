@@ -29,6 +29,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		::PostQuitMessage(0);
 		break;
 	}
+	case WM_SIZE:
+	{
+		Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		if (window) window->onSize();
+		break;
+	}
 	default:
 		return ::DefWindowProc(hwnd, msg, wparam, lparam);
 	}
@@ -54,7 +60,9 @@ Window::Window()
 	if (!::RegisterClassEx(&wc))
 		throw std::exception("Register class error");
 
-	m_hwnd = ::CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"MyWindowClass", L"DirectX Application", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, this);
+	m_hwnd = ::CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"MyWindowClass", L"DirectX Application",
+		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768,
+		NULL, NULL, NULL, NULL);
 
 	if (!m_hwnd)
 	{
@@ -109,10 +117,21 @@ void Window::onFocus()
 void Window::onKillFocus()
 {}
 
+void Window::onSize()
+{}
+
 RECT Window::getClientWindowRect()
 {
 	RECT rc;
 	::GetClientRect(this->m_hwnd, &rc);
+	return rc;
+}
+
+RECT Window::getSizeScreen()
+{
+	RECT rc;
+	rc.right = ::GetSystemMetrics(SM_CXSCREEN);
+	rc.bottom = ::GetSystemMetrics(SM_CYSCREEN);
 	return rc;
 }
 

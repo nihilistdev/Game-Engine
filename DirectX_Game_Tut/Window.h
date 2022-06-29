@@ -12,7 +12,9 @@ public:
 	virtual void onDestroy();
 	virtual void onFocus();
 	virtual void onKillFocus();
+	virtual void onSize();
 	RECT getClientWindowRect();
+	RECT getSizeScreen();
 	~Window();
 private:
 	bool broadcast();
