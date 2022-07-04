@@ -1,6 +1,7 @@
 #pragma once
 
-#include<Windows.h>
+#include <iostream>
+#include <Windows.h>
 
 class Window
 {
@@ -15,7 +16,7 @@ public:
 	virtual void onSize();
 	RECT getClientWindowRect();
 	RECT getSizeScreen();
-	~Window();
+	virtual ~Window();
 private:
 	bool broadcast();
 protected:

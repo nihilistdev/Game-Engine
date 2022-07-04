@@ -4,6 +4,7 @@
 #include "RenderSystem.h"
 #include "TextureManager.h"
 #include "MeshManager.h"
+#include "Material.h"
 
 class GraphicsEngine
 {
@@ -15,6 +16,10 @@ public:
 	TextureManager* getTextureManager();
 	MeshManager* getMeshManager();
 	void getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size);
+	void setMaterial(const MaterialPtr& material);
+public:
+	MaterialPtr createMaterial(const wchar_t* vertex_shader_path, const wchar_t* pixel_shader_path);
+	MaterialPtr createMaterial(const MaterialPtr& material);
 public:
 	static GraphicsEngine* get();
 	static void create();

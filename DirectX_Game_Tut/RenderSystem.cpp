@@ -82,7 +82,6 @@ DeviceContextPtr RenderSystem::getImmediateDeviceContext()
 
 VertexBufferPtr RenderSystem::createVertexBuffer(void* list_vertices, UINT size_vertex, UINT size_list, void* shader_byte_code, UINT size_byte_shader)
 {
-
 	VertexBufferPtr vb = nullptr;
 	try
 	{

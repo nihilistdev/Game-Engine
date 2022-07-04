@@ -43,7 +43,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 Window::Window()
 {
-	WNDCLASSEX wc;
+	WNDCLASSEX wc{};
 	wc.cbClsExtra = NULL;
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.cbWndExtra = NULL;
@@ -90,7 +90,7 @@ bool Window::broadcast()
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	Sleep(0);
+	Sleep(1);
 	return false;
 }
 
@@ -122,21 +122,18 @@ void Window::onSize()
 
 RECT Window::getClientWindowRect()
 {
-	RECT rc;
+	RECT rc{};
 	::GetClientRect(this->m_hwnd, &rc);
 	return rc;
 }
 
 RECT Window::getSizeScreen()
 {
-	RECT rc;
+	RECT rc{};
 	rc.right = ::GetSystemMetrics(SM_CXSCREEN);
 	rc.bottom = ::GetSystemMetrics(SM_CYSCREEN);
 	return rc;
 }
 
 Window::~Window()
-{
-	if (!::DestroyWindow(m_hwnd))
-		throw std::exception("Error while destroying window");
-}
+{}
