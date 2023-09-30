@@ -23,7 +23,7 @@ cbuffer constant: register(b0)
 
 float4 psmain(PS_INPUT input) : SV_TARGET
 {
-	float4 tex_color = TextureColor.Sample(TextureColorSampler, (1.0 - input.texcoord));
+	float4 tex_color = TextureColor.Sample(TextureColorSampler, float2(input.texcoord.x, 1.0 - input.texcoord.y));
 
 	float ka = 1.5;
 	float3 ia = float3(0.09, 0.082, 0.082);
@@ -44,10 +44,10 @@ float4 psmain(PS_INPUT input) : SV_TARGET
 	float ammount_difuse_light = max(0, dot(light_dir.xyz, input.normal));
 
 	float3 id = float3(1, 1, 1);
-	ia *= (tex_color.rgb);
+	id *= (tex_color.rgb);
 	float3 diffuse_light = (kd * id * ammount_difuse_light) / atenuation;
 
-	float ks = 1.0;
+	float ks = 0.0;
 	float3 direction_to_camera = normalize(input.world_position.xyz - m_camera_direction.xyz);
 	float3 is = float3(1.0, 1.0, 1.0);
 	float3 reflected_light = reflect(light_dir.xyz, input.normal);
@@ -57,5 +57,4 @@ float4 psmain(PS_INPUT input) : SV_TARGET
 
 	float3 final_light = ambient_light + diffuse_light + specular_light;
 	return float4(final_light, 1.0);
-	//return Texture.Sample(TextureSampler, input.texcoord * 0.5);
 }

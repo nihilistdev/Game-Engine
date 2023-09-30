@@ -11,53 +11,74 @@ Mesh::Mesh(const wchar_t* file_path) : Resource(file_path)
 {
 	tinyobj::attrib_t attribs;
 	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> material;
+	std::vector<tinyobj::material_t> materials;
 
 	std::string warn;
 	std::string err;
 
 	std::string input_file = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(file_path);
-	bool res = tinyobj::LoadObj(&attribs, &shapes, &material, &warn, &err, input_file.c_str());
+	std::string mlt_dir = input_file.substr(0, input_file.find_last_of("\\/"));
+
+	bool res = tinyobj::LoadObj(&attribs, &shapes, &materials, &warn, &err, input_file.c_str(), mlt_dir.c_str());
 
 	if (!err.empty()) throw std::exception("Mesh error");
 	if (!res) throw std::exception("Mesh empty error");
-	if (shapes.size() > 1) throw std::exception("Mesh too big error");
 
 	std::vector<VertexMesh> list_vertices;
 	std::vector<unsigned int> list_indices;
 
+	size_t size_vertex_index_list = 0;
 	for (size_t s = 0; s < shapes.size(); s++)
 	{
-		size_t index_offset = 0;
-		list_vertices.reserve(shapes[s].mesh.indices.size());
-		list_indices.reserve(shapes[s].mesh.indices.size());
+		size_vertex_index_list += shapes[s].mesh.indices.size();
+	}
 
-		for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++)
+	list_vertices.reserve(size_vertex_index_list);
+	list_indices.reserve(size_vertex_index_list);
+
+	m_material_slot.resize(materials.size());
+
+	size_t index_global_offset = 0;
+
+	for (size_t m = 0; m < materials.size(); m++)
+	{
+		m_material_slot[m].start_index = index_global_offset;
+		m_material_slot[m].material_id = m;
+
+		for (size_t s = 0; s < shapes.size(); s++)
 		{
-			unsigned char num_face_verts = shapes[s].mesh.num_face_vertices[f];
+			size_t index_offset = 0;
 
-			for (unsigned char v = 0; v < num_face_verts; v++)
+			for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++)
 			{
-				tinyobj::index_t index = shapes[s].mesh.indices[index_offset + v];
+				if (shapes[s].mesh.material_ids[f] != m) continue;
+				unsigned char num_face_verts = shapes[s].mesh.num_face_vertices[f];
 
-				tinyobj::real_t vx = attribs.vertices[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.vertex_index) * 3 + 0];
-				tinyobj::real_t vy = attribs.vertices[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.vertex_index) * 3 + 1];
-				tinyobj::real_t vz = attribs.vertices[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.vertex_index) * 3 + 2];
+				for (unsigned char v = 0; v < num_face_verts; v++)
+				{
+					tinyobj::index_t index = shapes[s].mesh.indices[index_offset + v];
 
-				tinyobj::real_t tx = attribs.texcoords[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.texcoord_index) * 2 + 0];
-				tinyobj::real_t ty = attribs.texcoords[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.texcoord_index) * 2 + 1];
+					tinyobj::real_t vx = attribs.vertices[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.vertex_index) * 3 + 0];
+					tinyobj::real_t vy = attribs.vertices[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.vertex_index) * 3 + 1];
+					tinyobj::real_t vz = attribs.vertices[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.vertex_index) * 3 + 2];
 
-				tinyobj::real_t nx = attribs.normals[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.normal_index) * 3 + 0];
-				tinyobj::real_t ny = attribs.normals[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.normal_index) * 3 + 1];
-				tinyobj::real_t nz = attribs.normals[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.normal_index) * 3 + 2];
+					tinyobj::real_t tx = attribs.texcoords[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.texcoord_index) * 2 + 0];
+					tinyobj::real_t ty = attribs.texcoords[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.texcoord_index) * 2 + 1];
 
-				VertexMesh vertex(Vector3D(vx, vy, vz), Vector2D(tx, ty), Vector3D(nx, ny, nz));
-				list_vertices.push_back(vertex);
-				list_indices.push_back((unsigned int)index_offset + v);
+					tinyobj::real_t nx = attribs.normals[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.normal_index) * 3 + 0];
+					tinyobj::real_t ny = attribs.normals[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.normal_index) * 3 + 1];
+					tinyobj::real_t nz = attribs.normals[static_cast<std::vector<tinyobj::real_t, std::allocator<tinyobj::real_t>>::size_type>(index.normal_index) * 3 + 2];
+
+					VertexMesh vertex(Vector3D(vx, vy, vz), Vector2D(tx, ty), Vector3D(nx, ny, nz));
+					list_vertices.push_back(vertex);
+					list_indices.push_back((unsigned int)index_global_offset + v);
+				}
+
+				index_offset += num_face_verts;
+				index_global_offset += num_face_verts;
 			}
-
-			index_offset += num_face_verts;
 		}
+		m_material_slot[m].num_index = index_global_offset - m_material_slot[m].start_index;
 	}
 
 	void* shader_byte_code = nullptr;
@@ -79,4 +100,15 @@ const VertexBufferPtr& Mesh::getVertexBuffer()
 const IndexBufferPtr& Mesh::getIndexBuffer()
 {
 	return m_index_buffer;
+}
+
+const MaterialSlot& Mesh::getMaterialSlot(unsigned int slot)
+{
+	if (slot >= m_material_slot.size()) return MaterialSlot();
+	return m_material_slot[slot];
+}
+
+size_t Mesh::getNumMaterialSlot()
+{
+	return m_material_slot.size();
 }

@@ -33,10 +33,10 @@ public:
 	void update();
 	void render();
 	void updateCamera();
-	void updateModel(Vector3D position, const MaterialPtr& material);
+	void updateModel(Vector3D position, const std::vector<MaterialPtr>& list_materials);
 	void updateLight();
 	void updateSkybox();
-	void drawMesh(const MeshPtr& mesh, const MaterialPtr& material);
+	void drawMesh(const MeshPtr& mesh, const std::vector<MaterialPtr>& list_materials);
 private:
 	SwapChainPtr m_swap_chain;
 	VertexBufferPtr m_vb;
@@ -52,12 +52,23 @@ private:
 	TexturePtr m_random_tex;
 	TexturePtr m_sky_tex;
 	TexturePtr m_earth_night_tex;
+	TexturePtr m_sand_tex;
+	TexturePtr m_barrel_tex;
+	TexturePtr m_brick_tex;
+	TexturePtr m_wood_tex;
+	TexturePtr m_windows_tex;
 	MeshPtr m_mesh;
 	MeshPtr m_sky_mesh;
+	MeshPtr m_terrain_mesh;
+	MeshPtr m_house_mesh;
 	MaterialPtr m_material;
-	MaterialPtr m_bricks_material;
 	MaterialPtr m_earth_material;
 	MaterialPtr m_sky_mat;
+	MaterialPtr m_terrain_mat;
+	MaterialPtr m_barrel_material;
+	MaterialPtr m_bricks_material;
+	MaterialPtr m_windows_material;
+	MaterialPtr m_wood_material;
 private:
 	float m_old_delta;
 	float m_new_delta;
@@ -73,8 +84,10 @@ private:
 	bool m_play_state = false;
 	bool m_fullscreen_state = false;
 	float m_time = 0.0f;
+	float m_light_radius = 500.0f;
 	Matrix4x4 m_world_cam;
 	Matrix4x4 m_view_cam;
 	Matrix4x4 m_proj_cam;
 	Vector4D m_light_position;
+	std::vector<MaterialPtr> m_list_materials;
 };
